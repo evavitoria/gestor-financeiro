@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestor Financeiro</title>
+    <style>
+        body { font-family: sans-serif; background: #f3ecf3; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .container { background: #9a52d8; padding: 20px; border-radius: 15px; color: white; width: 350px; text-align: center; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #7c36d2; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Consultor IA</h1>
+
+    <form action="/salario" method="POST">
+      <input type="number" name="salario" placeholder="Seu salário R$"
+             value="{{ '%.2f'|format(salario) if salario else '' }}" step="0.01">
+      <button type="submit">Salvar salário</button>
+    </form>
+
+    <hr style="margin: 15px 0; border-color: rgba(255,255,255,0.3);">
+
+    <form action="/pergunta" method="POST">
+      <input type="number" name="valor" placeholder="Valor R$" step="0.01" required>
+      <select name="tipo">
+        <option value="Conta Fixa">Conta Fixa</option>
+        <option value="Gasto Variável">Gasto Variável</option>
+        <option value="Investimento">Investimento</option>
+      </select>
+      <input type="text" name="duvida" placeholder="Descrição">
+      <button type="submit">Salvar</button>
+    </form>
+  </div>
+
+  {% if salario > 0 %}
+  <div style="display: flex; gap: 15px; margin-top: 20px; width: 80%; max-width: 700px;">
+    <div style="flex:1; background:white; border-radius:10px; padding:15px; text-align:center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <p style="margin:0; color:#888; font-size:12px;">Salário</p>
+      <p style="margin:5px 0 0; font-size:20px; font-weight:bold; color:green;">R$ {{ "%.2f"|format(salario) }}</p>
+    </div>
+    <div style="flex:1; background:white; border-radius:10px; padding:15px; text-align:center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <p style="margin:0; color:#888; font-size:12px;">Total gastos</p>
+      <p style="margin:5px 0 0; font-size:20px; font-weight:bold; color:rgb(236, 83, 83);">R$ {{ "%.2f"|format(total_gastos) }}</p>
+    </div>
+    <div style="flex:1; background:white; border-radius:10px; padding:15px; text-align:center; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <p style="margin:0; color:#888; font-size:12px;">Saldo</p>
+{% if saldo >= 0 %}
+<p style="margin:5px 0 0; font-size:20px; font-weight:bold; color:green;">R$ {{ "%.2f"|format(saldo) }}</p>
+{% else %}
+<p style="margin:5px 0 0; font-size:20px; font-weight:bold; color:rgb(27, 4, 4);">R$ {{ "%.2f"|format(saldo) }}</p>
+{% endif %}    
+  </div>
+  </div>
+  {% endif %}
+  <!-- Caixinhas -->
+<div style="background:white; margin-top:20px; padding:20px; border-radius:15px; width:80%; max-width:700px; box-shadow: 0 5px 15px rgba(136, 4, 252, 0.525);">
+  <h2 style="margin:0 0 15px; font-size:16px; color:#8e44ad;">🏦 Minhas caixinhas</h2>
+
+  <!-- Formulário nova caixinha -->
+  <form action="/caixinha" method="POST" style="display:flex; gap:10px; margin-bottom:15px;">
+    <input type="text" name="nome" placeholder="Nome da caixinha" required
+           style="flex:2; padding:8px; border-radius:5px; border:1px solid #ddd; font-size:13px;">
+    <input type="number" name="valor" placeholder="Valor R$" step="0.01" required
+           style="flex:1; padding:8px; border-radius:5px; border:1px solid #ddd; font-size:13px;">
+    <button type="submit"
+            style="background:#8e44ad; color:white; border:none; border-radius:5px; padding:8px 15px; cursor:pointer; font-size:13px; width:auto;">
+      Adicionar
+    </button>
+  </form>
+
+  <!-- Tabela das caixinhas -->
+  {% if caixinhas %}
+  <table>
+    <tr><th>Nome</th><th>Valor guardado</th><th></th></tr>
+    {% for c in caixinhas %}
+    <tr>
+      <td>{{ c[1] }}</td>
+      <td style="color:#8e44ad; font-weight:bold;">R$ {{ "%.2f"|format(c[2]) }}</td>
+      <td>
+        <form action="/deletar_caixinha/{{ c[0] }}" method="POST" style="margin:0;">
+          <button type="submit" style="background:rgb(178, 15, 232); color:white; border:none; border-radius:4px; padding:3px 8px; cursor:pointer; font-size:11px; width:auto;">Apagar</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td><strong>Total guardado</strong></td>
+      <td style="color:#8e44ad; font-weight:bold;">R$ {{ "%.2f"|format(total_caixinhas) }}</td>
+      <td></td>
+    </tr>
+  </table>
+  {% else %}
+  <p style="color:#aaa; font-size:13px;">Nenhuma caixinha ainda.</p>
+  {% endif %}
+</div>
+
+  {% if historico %}
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; width: 80%; max-width: 700px;">
+
+    <div style="background:white; border-radius:15px; padding:20px; box-shadow: 0 5px 15px rgba(136, 4, 252, 0.525);">
+      <h2 style="margin:0 0 15px; font-size:16px; color:#855bc7;">🧾 Contas fixas</h2>
+      <table>
+        <tr><th>Descrição</th><th>Valor</th><th></th></tr>
+        {% for item in historico if item[2] == 'Conta Fixa' %}
+        <tr>
+          <td>{{ item[3] }}</td>
+          <td style="color:rgb(32, 23, 23);">R$ {{ "%.2f"|format(item[1]) }}</td>
+          <td>
+            <form action="/deletar/{{ item[0] }}" method="POST" style="margin:0;">
+              <button type="submit" style="background:rgb(178, 15, 232);; color:rgb(241, 239, 242); border:none; border-radius:4px; padding:3px 8px; cursor:pointer; font-size:11px; width:auto;">Apagar</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3" style="color:#aaa; font-size:13px;">Nenhuma conta fixa</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <div style="background:white; border-radius:15px; padding:20px; box-shadow: 0 5px 15px rgba(136, 4, 252, 0.525);">
+      <h2 style="margin:0 0 15px; font-size:16px; color:#855bc7;">📈 Investimentos</h2>
+      <table>
+        <tr><th>Descrição</th><th>Valor</th><th></th></tr>
+        {% for item in historico if item[2] == 'Investimento' %}
+        <tr>
+          <td>{{ item[3] }}</td>
+          <td style="color:rgb(12, 11, 13);">R$ {{ "%.2f"|format(item[1]) }}</td>
+          <td>
+            <form action="/deletar/{{ item[0] }}" method="POST" style="margin:0;">
+              <button type="submit" style="background:rgb(178, 15, 232); color:white; border:none; border-radius:4px; padding:3px 8px; cursor:pointer; font-size:11px; width:auto;">Apagar</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3" style="color:#aaa; font-size:13px;">Nenhum investimento</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <div style="background:white; border-radius:15px; padding:20px; box-shadow: 0 5px 15px rgba(136, 4, 252, 0.525);">
+      <h2 style="margin:0 0 15px; font-size:16px; color:#855bc7;">🛒 Gastos variáveis</h2>
+      <table>
+        <tr><th>Descrição</th><th>Valor</th><th></th></tr>
+        {% for item in historico if item[2] == 'Gasto Variável' %}
+        <tr>
+          <td>{{ item[3] }}</td>
+          <td style="color:rgb(20, 19, 16);">R$ {{ "%.2f"|format(item[1]) }}</td>
+          <td>
+            <form action="/deletar/{{ item[0] }}" method="POST" style="margin:0;">
+              <button type="submit" style="background:rgb(178, 15, 232);; color:white; border:none; border-radius:4px; padding:3px 8px; cursor:pointer; font-size:11px; width:auto;">Apagar</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3" style="color:#aaa; font-size:13px;">Nenhum gasto variável</td></tr>
+        {% endfor %}
+      </table>
+    </div>
+
+  </div>
+
+    <div style="background:white; margin-top:20px; padding:20px; border-radius:15px; width:80%; max-width:700px; box-shadow: 0 5px 15px rgba(136, 4, 252, 0.525);">
+    <h2 style="margin:0 0 15px;">🕒 Histórico completo</h2>
+    <table>
+      <tr><th>Valor</th><th>Tipo</th><th>Descrição</th><th></th></tr>
+      {% for item in historico %}
+      <tr>
+        <td>R$ {{ "%.2f"|format(item[1]) }}</td>
+        <td>{{ item[2] }}</td>
+        <td>{{ item[3] }}</td>
+        <td>
+          <form action="/deletar/{{ item[0] }}" method="POST" style="margin:0;">
+            <button type="submit" style="background:rgb(178, 15, 232); color:white; border:none; border-radius:4px; padding:3px 8px; cursor:pointer; font-size:11px; width:auto;">Apagar</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% endif %}
+
+  <!-- Gráfico de barras -->
+{% if historico %}
+<div style="background:rgb(190, 167, 240); margin-top:20px; padding:20px; border-radius:15px; width:80%; max-width:700px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-bottom:30px;">
+  <h2 style="margin:0 0 15px; font-size:16px; color:#333;">📊 Gastos por categoria</h2>
+  <canvas id="grafico" height="120"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('grafico').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Conta Fixa', 'Gasto Variável', 'Investimento'],
+      datasets: [{
+        label: 'Total R$',
+        data: [{{ total_fixa }}, {{ total_variavel }}, {{ total_investimento }}],
+        backgroundColor: ['#e74c3c', '#e67e22', '#27ae60'],
+        borderRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: value => 'R$ ' + value.toLocaleString('pt-BR')
+          }
+        }
+      }
+    }
+  });
+</script>
+{% endif %}
+
+</body>
+</html>
