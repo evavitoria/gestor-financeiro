@@ -1,14 +1,27 @@
 from flask import Flask, render_template, request, redirect, url_for
-import sqlite3
+import psycopg2
+import os
 
 app = Flask(__name__)
 
+DATABASE_URL = os.environ.get('DATABASE_URL', None)
+
+if DATABASE_URL is None:
+    # Roda local com SQLite
+    import sqlite3
+    USE_SQLITE = True
+else:
+    USE_SQLITE = False
+    
+def get_conn():
+    return psycopg2.connect(DATABASE_URL)
+
 def init_db():
-    conn = sqlite3.connect('financas.db')
+    conn = get_conn()
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS transacoes (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             valor REAL,
             tipo TEXT,
             duvida TEXT
@@ -22,32 +35,35 @@ def init_db():
     ''')
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS caixinhas (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             nome TEXT,
             valor REAL
         )
     ''')
     conn.commit()
+    cursor.close()
     conn.close()
 
 init_db()
 
 def get_salario():
-    conn = sqlite3.connect('financas.db')
+    conn = get_conn()
     cursor = conn.cursor()
     cursor.execute("SELECT valor FROM configuracoes WHERE chave = 'salario'")
     row = cursor.fetchone()
+    cursor.close()
     conn.close()
     return float(row[0]) if row else 0.0
 
 @app.route('/')
 def index():
-    conn = sqlite3.connect('financas.db')
+    conn = get_conn()
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM transacoes ORDER BY id DESC')
     historico = cursor.fetchall()
     cursor.execute('SELECT * FROM caixinhas ORDER BY id DESC')
     caixinhas = cursor.fetchall()
+    cursor.close()
     conn.close()
 
     salario = get_salario()
@@ -76,10 +92,11 @@ def salvar_salario():
         valor = float(valor_raw)
     except:
         valor = 0.0
-    conn = sqlite3.connect('financas.db')
+    conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("INSERT OR REPLACE INTO configuracoes (chave, valor) VALUES ('salario', ?)", (valor,))
+    cursor.execute("INSERT INTO configuracoes (chave, valor) VALUES ('salario', %s) ON CONFLICT (chave) DO UPDATE SET valor = %s", (valor, valor))
     conn.commit()
+    cursor.close()
     conn.close()
     return redirect(url_for('index'))
 
@@ -92,20 +109,21 @@ def responder():
         valor = float(valor_raw)
     except:
         valor = 0.0
-    conn = sqlite3.connect('financas.db')
+    conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO transacoes (valor, tipo, duvida) VALUES (?, ?, ?)',
-                   (valor, tipo, duvida))
+    cursor.execute('INSERT INTO transacoes (valor, tipo, duvida) VALUES (%s, %s, %s)', (valor, tipo, duvida))
     conn.commit()
+    cursor.close()
     conn.close()
     return redirect(url_for('index'))
 
 @app.route('/deletar/<int:id>', methods=['POST'])
 def deletar(id):
-    conn = sqlite3.connect('financas.db')
+    conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute('DELETE FROM transacoes WHERE id = ?', (id,))
+    cursor.execute('DELETE FROM transacoes WHERE id = %s', (id,))
     conn.commit()
+    cursor.close()
     conn.close()
     return redirect(url_for('index'))
 
@@ -117,19 +135,21 @@ def salvar_caixinha():
         valor = float(valor_raw)
     except:
         valor = 0.0
-    conn = sqlite3.connect('financas.db')
+    conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO caixinhas (nome, valor) VALUES (?, ?)', (nome, valor))
+    cursor.execute('INSERT INTO caixinhas (nome, valor) VALUES (%s, %s)', (nome, valor))
     conn.commit()
+    cursor.close()
     conn.close()
     return redirect(url_for('index'))
 
 @app.route('/deletar_caixinha/<int:id>', methods=['POST'])
 def deletar_caixinha(id):
-    conn = sqlite3.connect('financas.db')
+    conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute('DELETE FROM caixinhas WHERE id = ?', (id,))
+    cursor.execute('DELETE FROM caixinhas WHERE id = %s', (id,))
     conn.commit()
+    cursor.close()
     conn.close()
     return redirect(url_for('index'))
 
