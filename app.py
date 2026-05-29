@@ -1,7 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-import psycopg2
+try:
+    import psycopg2
+except ImportError:
+    import subprocess
+    subprocess.run(["pip", "install", "psycopg2-binary==2.9.9"])
+    import psycopg2
 import os
 
 app = Flask(__name__)
