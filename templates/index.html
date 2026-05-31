@@ -214,23 +214,81 @@
 <!-- Meta de economia -->
 <div class="tabela-card" style="margin-bottom: 12px;">
     <h3>🎯 Meta de economia</h3>
-    <form action="/meta" method="POST" style="display:flex; gap:8px; margin-bottom:12px;">
-        <input type="number" name="meta" placeholder="Meta R$" step="0.01"
+    <form action="/meta" method="POST" style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+        <input type="number" name="meta" placeholder="Valor da meta R$" step="0.01"
                value="{{ '%.2f'|format(meta) if meta else '' }}"
-               style="flex:1; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
+               style="flex:2; min-width:120px; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
+        <input type="date" name="prazo"
+               value="{{ meta_prazo if meta_prazo else '' }}"
+               style="flex:2; min-width:130px; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
         <button type="submit" style="background:#7c3aed; color:white; border:none; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:13px;">Salvar</button>
     </form>
+
     {% if meta > 0 %}
+    <!-- Barra de progresso -->
     <div style="margin-bottom:6px; display:flex; justify-content:space-between; font-size:12px; color:#555;">
-        <span>R$ {{ "%.2f"|format(total_caixinhas) }} guardado</span>
+        <span>R$ {{ "%.2f"|format(total_depositado_meta) }} guardado</span>
         <span>Meta: R$ {{ "%.2f"|format(meta) }}</span>
     </div>
-    <div style="background:#f0f0f0; border-radius:99px; height:12px; overflow:hidden;">
+    <div style="background:#f0f0f0; border-radius:99px; height:14px; overflow:hidden; margin-bottom:6px;">
         <div style="background: linear-gradient(90deg, #7c3aed, #a855f7); height:100%; width:{{ progresso }}%; border-radius:99px; transition: width 0.5s;"></div>
     </div>
-    <p style="text-align:right; font-size:12px; color:#7c3aed; font-weight:bold; margin-top:6px;">{{ progresso }}% concluído</p>
+    <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:12px;">
+        <span style="color:#7c3aed; font-weight:bold;">{{ progresso }}% concluído</span>
+        {% if dias_restantes is not none %}
+            {% if dias_restantes > 0 %}
+            <span style="color:#555;">⏳ {{ dias_restantes }} dias restantes</span>
+            {% elif dias_restantes == 0 %}
+            <span style="color:#d97706; font-weight:bold;">⚠️ Prazo é hoje!</span>
+            {% else %}
+            <span style="color:#dc2626; font-weight:bold;">❌ Prazo vencido há {{ dias_restantes|abs }} dias</span>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <!-- Adicionar depósito -->
+    <form action="/deposito_meta" method="POST" style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
+        <input type="number" name="valor" placeholder="Valor R$" step="0.01" required
+               style="flex:1; min-width:100px; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
+        <input type="text" name="descricao" placeholder="Descrição (opcional)"
+               style="flex:2; min-width:120px; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
+        <button type="submit" style="background:#16a34a; color:white; border:none; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:13px;">+ Depósito</button>
+    </form>
+
+    <!-- Histórico de depósitos -->
+    {% if depositos_meta %}
+    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+        <tr>
+            <th style="text-align:left; color:#888; font-size:11px; padding:4px 0;">Data</th>
+            <th style="text-align:left; color:#888; font-size:11px; padding:4px 0;">Descrição</th>
+            <th style="text-align:right; color:#888; font-size:11px; padding:4px 0;">Valor</th>
+            <th></th>
+        </tr>
+        {% for d in depositos_meta %}
+        <tr>
+            <td style="padding:6px 0; border-bottom:1px solid #f0f0f0; color:#555;">{{ d[4] }}</td>
+            <td style="padding:6px 0; border-bottom:1px solid #f0f0f0;">{{ d[3] or '—' }}</td>
+            <td style="padding:6px 0; border-bottom:1px solid #f0f0f0; text-align:right; color:#16a34a; font-weight:bold;">R$ {{ "%.2f"|format(d[2]) }}</td>
+            <td style="padding:6px 0; border-bottom:1px solid #f0f0f0; text-align:right;">
+                <form action="/deletar_deposito/{{ d[0] }}" method="POST" style="margin:0;">
+                    <button type="submit" class="btn-apagar">X</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
     {% else %}
-    <p class="vazio">Defina uma meta para acompanhar seu progresso!</p>
+    <p class="vazio">Nenhum depósito ainda. Comece guardando!</p>
+    {% endif %}
+
+    {% if progresso >= 100 %}
+    <div style="background:#dcfce7; border-radius:10px; padding:10px; text-align:center; margin-top:10px; color:#16a34a; font-weight:bold; font-size:14px;">
+        🎉 Parabéns! Você atingiu sua meta!
+    </div>
+    {% endif %}
+
+    {% else %}
+    <p class="vazio">Defina uma meta e prazo para acompanhar seu progresso!</p>
     {% endif %}
 </div>
 

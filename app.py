@@ -46,11 +46,11 @@ def init_db():
         UNIQUE(user_id, chave))''')
     cursor.execute(f'''CREATE TABLE IF NOT EXISTS caixinhas (
         id {auto}, user_id INTEGER, nome TEXT, valor REAL)''')
+    cursor.execute(f'''CREATE TABLE IF NOT EXISTS depositos_meta (
+        id {auto}, user_id INTEGER, valor REAL, descricao TEXT, data TEXT)''')
     conn.commit()
     cursor.close()
     conn.close()
-
-init_db()
 
 class User(UserMixin):
     def __init__(self, id, email, nome):
@@ -133,6 +133,11 @@ def index():
     cursor.execute(ph("SELECT valor FROM configuracoes WHERE chave = 'meta' AND user_id = %s"), (current_user.id,))
     row = cursor.fetchone()
     meta = float(row[0]) if row else 0.0
+    cursor.execute(ph("SELECT valor FROM configuracoes WHERE chave = 'meta_prazo' AND user_id = %s"), (current_user.id,))
+    row2 = cursor.fetchone()
+    meta_prazo = row2[0] if row2 else ''
+    cursor.execute(ph('SELECT * FROM depositos_meta WHERE user_id = %s ORDER BY id DESC'), (current_user.id,))
+    depositos_meta = cursor.fetchall()
     cursor.close()
     conn.close()
 
@@ -143,7 +148,18 @@ def index():
     total_fixa = sum(item[2] for item in historico if item[3] == 'Conta Fixa')
     total_variavel = sum(item[2] for item in historico if item[3] == 'Gasto Variável')
     total_investimento = sum(item[2] for item in historico if item[3] == 'Investimento')
-    progresso = min(int((total_caixinhas / meta * 100)), 100) if meta > 0 else 0
+    total_depositado_meta = sum(d[2] for d in depositos_meta)
+    progresso = min(int((total_depositado_meta / meta * 100)), 100) if meta > 0 else 0
+
+    # Dias restantes
+    dias_restantes = None
+    if meta_prazo:
+        from datetime import date
+        try:
+            prazo_dt = date.fromisoformat(meta_prazo)
+            dias_restantes = (prazo_dt - date.today()).days
+        except:
+            pass
 
     return render_template('index.html',
                            historico=historico,
@@ -156,7 +172,12 @@ def index():
                            total_variavel=total_variavel,
                            total_investimento=total_investimento,
                            meta=meta,
-                           progresso=progresso)
+                           meta_prazo=meta_prazo,
+                           progresso=progresso,
+                           depositos_meta=depositos_meta,
+                           total_depositado_meta=total_depositado_meta,
+                           dias_restantes=dias_restantes)
+
 @app.route('/salario', methods=['POST'])
 @login_required
 def salvar_salario():
@@ -241,6 +262,7 @@ def sitemap():
 @login_required
 def salvar_meta():
     valor_raw = request.form.get('meta', '0').replace(',', '.')
+    prazo = request.form.get('prazo', '')
     try:
         valor = float(valor_raw)
     except:
@@ -249,8 +271,41 @@ def salvar_meta():
     cursor = conn.cursor()
     if tipo == 'sqlite':
         cursor.execute('INSERT OR REPLACE INTO configuracoes (user_id, chave, valor) VALUES (?, ?, ?)', (current_user.id, 'meta', valor))
+        cursor.execute('INSERT OR REPLACE INTO configuracoes (user_id, chave, valor) VALUES (?, ?, ?)', (current_user.id, 'meta_prazo', prazo))
     else:
         cursor.execute("INSERT INTO configuracoes (user_id, chave, valor) VALUES (%s, 'meta', %s) ON CONFLICT (user_id, chave) DO UPDATE SET valor = %s", (current_user.id, valor, valor))
+        cursor.execute("INSERT INTO configuracoes (user_id, chave, valor) VALUES (%s, 'meta_prazo', %s) ON CONFLICT (user_id, chave) DO UPDATE SET valor = %s", (current_user.id, prazo, prazo))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return redirect(url_for('index'))
+
+@app.route('/deposito_meta', methods=['POST'])
+@login_required
+def deposito_meta():
+    valor_raw = request.form.get('valor', '0').replace(',', '.')
+    descricao = request.form.get('descricao', '')
+    try:
+        valor = float(valor_raw)
+    except:
+        valor = 0.0
+    from datetime import date
+    hoje = date.today().strftime('%Y-%m-%d')
+    conn, _ = get_conn()
+    cursor = conn.cursor()
+    cursor.execute(ph('INSERT INTO depositos_meta (user_id, valor, descricao, data) VALUES (%s, %s, %s, %s)'),
+                   (current_user.id, valor, descricao, hoje))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return redirect(url_for('index'))
+
+@app.route('/deletar_deposito/<int:id>', methods=['POST'])
+@login_required
+def deletar_deposito(id):
+    conn, _ = get_conn()
+    cursor = conn.cursor()
+    cursor.execute(ph('DELETE FROM depositos_meta WHERE id = %s AND user_id = %s'), (id, current_user.id))
     conn.commit()
     cursor.close()
     conn.close()
