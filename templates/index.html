@@ -211,6 +211,30 @@
     {% endif %}
 </div>
 
+<!-- Meta de economia -->
+<div class="tabela-card" style="margin-bottom: 12px;">
+    <h3>🎯 Meta de economia</h3>
+    <form action="/meta" method="POST" style="display:flex; gap:8px; margin-bottom:12px;">
+        <input type="number" name="meta" placeholder="Meta R$" step="0.01"
+               value="{{ '%.2f'|format(meta) if meta else '' }}"
+               style="flex:1; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
+        <button type="submit" style="background:#7c3aed; color:white; border:none; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:13px;">Salvar</button>
+    </form>
+    {% if meta > 0 %}
+    <div style="margin-bottom:6px; display:flex; justify-content:space-between; font-size:12px; color:#555;">
+        <span>R$ {{ "%.2f"|format(total_caixinhas) }} guardado</span>
+        <span>Meta: R$ {{ "%.2f"|format(meta) }}</span>
+    </div>
+    <div style="background:#f0f0f0; border-radius:99px; height:12px; overflow:hidden;">
+        <div style="background: linear-gradient(90deg, #7c3aed, #a855f7); height:100%; width:{{ progresso }}%; border-radius:99px; transition: width 0.5s;"></div>
+    </div>
+    <p style="text-align:right; font-size:12px; color:#7c3aed; font-weight:bold; margin-top:6px;">{{ progresso }}% concluído</p>
+    {% else %}
+    <p class="vazio">Defina uma meta para acompanhar seu progresso!</p>
+    {% endif %}
+</div>
+
+
 {% if historico %}
 <div class="historico-card">
     <h3>🕒 Histórico completo</h3>

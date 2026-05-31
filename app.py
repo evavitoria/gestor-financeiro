@@ -232,5 +232,24 @@ def deletar_caixinha(id):
 def sitemap():
     return app.send_static_file('sitemap.xml')
 
+@app.route('/meta', methods=['POST'])
+@login_required
+def salvar_meta():
+    valor_raw = request.form.get('meta', '0').replace(',', '.')
+    try:
+        valor = float(valor_raw)
+    except:
+        valor = 0.0
+    conn, tipo = get_conn()
+    cursor = conn.cursor()
+    if tipo == 'sqlite':
+        cursor.execute('INSERT OR REPLACE INTO configuracoes (user_id, chave, valor) VALUES (?, ?, ?)', (current_user.id, 'meta', valor))
+    else:
+        cursor.execute("INSERT INTO configuracoes (user_id, chave, valor) VALUES (%s, 'meta', %s) ON CONFLICT (user_id, chave) DO UPDATE SET valor = %s", (current_user.id, valor, valor))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     app.run(debug=True)
