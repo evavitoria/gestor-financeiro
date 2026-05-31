@@ -130,6 +130,9 @@ def index():
     historico = cursor.fetchall()
     cursor.execute(ph('SELECT * FROM caixinhas WHERE user_id = %s ORDER BY id DESC'), (current_user.id,))
     caixinhas = cursor.fetchall()
+    cursor.execute(ph("SELECT valor FROM configuracoes WHERE chave = 'meta' AND user_id = %s"), (current_user.id,))
+    row = cursor.fetchone()
+    meta = float(row[0]) if row else 0.0
     cursor.close()
     conn.close()
 
@@ -140,6 +143,7 @@ def index():
     total_fixa = sum(item[2] for item in historico if item[3] == 'Conta Fixa')
     total_variavel = sum(item[2] for item in historico if item[3] == 'Gasto Variável')
     total_investimento = sum(item[2] for item in historico if item[3] == 'Investimento')
+    progresso = min(int((total_caixinhas / meta * 100)), 100) if meta > 0 else 0
 
     return render_template('index.html',
                            historico=historico,
@@ -150,8 +154,9 @@ def index():
                            total_caixinhas=total_caixinhas,
                            total_fixa=total_fixa,
                            total_variavel=total_variavel,
-                           total_investimento=total_investimento)
-
+                           total_investimento=total_investimento,
+                           meta=meta,
+                           progresso=progresso)
 @app.route('/salario', methods=['POST'])
 @login_required
 def salvar_salario():
