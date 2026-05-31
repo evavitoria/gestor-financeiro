@@ -228,5 +228,9 @@ def deletar_caixinha(id):
     conn.close()
     return redirect(url_for('index'))
 
+@app.route('/sitemap.xml')
+def sitemap():
+    return app.send_static_file('sitemap.xml')
+
 if __name__ == '__main__':
     app.run(debug=True)
