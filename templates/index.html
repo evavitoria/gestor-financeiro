@@ -9,7 +9,7 @@
     <title>Organização Financeira</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: sans-serif; background: #f3ecf3; min-height: 100vh; padding: 20px; }
+        body { font-family: sans-serif; background: linear-gradient(160deg, #3b0764, #6b21a8, #7c3aed); min-height: 100vh; padding: 20px; }
         .topo { background: linear-gradient(135deg, rgba(124,58,237,0.85), rgba(147,51,234,0.85)), url('https://i.pinimg.com/1200x/d6/c7/52/d6c752d2054589f6ff939f98e11e3c22.jpg') center/cover no-repeat; border-radius: 20px; padding: 20px; color: white; margin-bottom: 16px; }
         .topo-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
         .avatar { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 20px; }
@@ -73,24 +73,24 @@
     </div>
 
     {% if salario > 0 %}
-    <div class="cards-resumo">
-        <div class="card-resumo">
-            <p>Salário</p>
-            <p style="color: #86efac;">R$ {{ "%.2f"|format(salario) }}</p>
+    <div class="card-resumo tres">
+    <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.4); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v2m0 8v2M9 9.5A2.5 2.5 0 0 1 11.5 7H13a2 2 0 0 1 0 4h-2a2 2 0 0 0 0 4h1.5A2.5 2.5 0 0 0 15 12.5"/>
+            </svg>
         </div>
-        <div class="card-resumo">
-            <p>Total gastos</p>
-            <p style="color: #fca5a5;">R$ {{ "%.2f"|format(total_gastos) }}</p>
-        </div>
-        <div class="card-resumo tres">
-            <p>Saldo</p>
+        <div>
+            <p style="font-size:11px; opacity:0.8; margin-bottom:4px;">Saldo disponível</p>
             {% if saldo >= 0 %}
-            <p style="color: #86efac;">R$ {{ "%.2f"|format(saldo) }}</p>
+            <p style="font-size:22px; font-weight:bold; color:#86efac;">R$ {{ "%.2f"|format(saldo) }}</p>
             {% else %}
-            <p style="color: #fca5a5;">R$ {{ "%.2f"|format(saldo) }}</p>
+            <p style="font-size:22px; font-weight:bold; color:#fca5a5;">R$ {{ "%.2f"|format(saldo) }}</p>
             {% endif %}
         </div>
     </div>
+</div>
     {% endif %}
 
     <div class="formulario">
