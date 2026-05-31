@@ -62,7 +62,7 @@
 
 <div class="topo">
     <div class="topo-header">
-        <div class="avatar">💰</div>
+        <div class="avatar">💜</div>
         <div>
             <p class="topo-nome">Organização Financeira</p>
             <p class="topo-sub">Olá, {{ current_user.nome }}!</p>
@@ -72,13 +72,13 @@
 
     {% if salario > 0 %}
     <div class="card-resumo tres">
-    <div style="display:flex; align-items:center; gap:10px;">
-        <div style="width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.2); border:2px solid rgba(255,255,255,0.4); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 6v2m0 8v2M9 9.5A2.5 2.5 0 0 1 11.5 7H13a2 2 0 0 1 0 4h-2a2 2 0 0 0 0 4h1.5A2.5 2.5 0 0 0 15 12.5"/>
-            </svg>
-        </div>
+    <p style="font-size:11px; opacity:0.8; margin-bottom:4px;">💰 Saldo disponível</p>
+    {% if saldo >= 0 %}
+    <p style="font-size:22px; font-weight:bold; color:#86efac;">R$ {{ "%.2f"|format(saldo) }}</p>
+    {% else %}
+    <p style="font-size:22px; font-weight:bold; color:#fca5a5;">R$ {{ "%.2f"|format(saldo) }}</p>
+    {% endif %}
+</div>
         <div>
             <p style="font-size:11px; opacity:0.8; margin-bottom:4px;">Saldo disponível</p>
             {% if saldo >= 0 %}
