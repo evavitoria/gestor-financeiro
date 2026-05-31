@@ -8,55 +8,55 @@
     <meta name="keywords" content="gestor financeiro, controle de gastos, finanças pessoais">
     <title>Organização Financeira</title>
     <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: sans-serif; background: linear-gradient(160deg, #3b0764, #6b21a8, #7c3aed); min-height: 100vh; padding: 20px; }
-    .topo { background: linear-gradient(135deg, #7c3aed, #9333ea); border-radius: 20px; padding: 20px; color: white; margin-bottom: 16px; }
-    .topo-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-    .avatar { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 20px; }
-    .topo-nome { font-size: 16px; font-weight: bold; }
-    .topo-sub { font-size: 12px; opacity: 0.8; }
-    .sair { margin-left: auto; font-size: 12px; color: white; opacity: 0.8; text-decoration: none; }
-    .cards-resumo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
-    .card-resumo { background: rgba(255,255,255,0.15); border-radius: 12px; padding: 12px; }
-    .card-resumo p:first-child { font-size: 11px; opacity: 0.8; margin-bottom: 4px; }
-    .card-resumo p:last-child { font-size: 20px; font-weight: bold; }
-    .card-resumo.tres { grid-column: span 2; }
-    .formulario { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; }
-    .formulario p { font-size: 12px; opacity: 0.8; margin-bottom: 8px; color: white; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .form-grid input, .form-grid select { background: rgba(255,255,255,0.2); border: none; border-radius: 8px; padding: 10px; color: white; font-size: 13px; width: 100%; }
-    .form-grid input::placeholder { color: rgba(255,255,255,0.9); }
-    .form-grid select option { color: black; background: white; }
-    .form-full { width: 100%; background: rgba(255,255,255,0.2); border: none; border-radius: 8px; padding: 10px; color: white; font-size: 13px; margin-top: 8px; }
-    .form-full::placeholder { color: rgba(255,255,255,0.9); }
-    .btn-salvar { width: 100%; margin-top: 8px; background: white; color: #7c3aed; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: bold; cursor: pointer; }
-    .btn-salvar:hover { background: #f0e6ff; }
-    .salario-form { display: flex; gap: 8px; margin-bottom: 16px; }
-    .salario-form input { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #ddd; font-size: 14px; background: white; }
-    .salario-form button { background: #7c3aed; color: white; border: none; border-radius: 10px; padding: 10px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; }
-    .grid-tabelas { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-    .tabela-card { background: white; border-radius: 16px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .tabela-card h3 { font-size: 13px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; color: #333; }
-    .tabela-card table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .tabela-card td { padding: 6px 0; border-bottom: 1px solid #f0f0f0; color: #333; }
-    .tabela-card td:last-child { text-align: right; }
-    .tabela-full { grid-column: span 2; }
-    .btn-apagar { background: #9333ea; color: white; border: none; border-radius: 4px; padding: 3px 8px; cursor: pointer; font-size: 11px; }
-    .grafico-card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 12px; }
-    .grafico-card h3 { font-size: 14px; font-weight: bold; margin-bottom: 12px; color: #333; }
-    .historico-card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
-    .historico-card h3 { font-size: 14px; font-weight: bold; margin-bottom: 12px; color: #333; }
-    .historico-card table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .historico-card td, .historico-card th { padding: 8px 4px; border-bottom: 1px solid #f0f0f0; text-align: left; }
-    .historico-card th { font-size: 11px; color: #888; }
-    .vazio { color: #bbb; font-size: 12px; font-style: italic; }
-    @media (max-width: 500px) {
-        .grid-tabelas { grid-template-columns: 1fr; }
-        .tabela-full { grid-column: span 1; }
-        .cards-resumo { grid-template-columns: 1fr; }
-        .card-resumo.tres { grid-column: span 1; }
-    }
-</style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: sans-serif; background: linear-gradient(160deg, #3b0764, #6b21a8, #7c3aed); min-height: 100vh; padding: 20px; }
+        .topo { background: linear-gradient(135deg, #7c3aed, #9333ea); border-radius: 20px; padding: 20px; color: white; margin-bottom: 16px; }
+        .topo-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .topo-nome { font-size: 16px; font-weight: bold; }
+        .topo-sub { font-size: 12px; opacity: 0.8; }
+        .sair { margin-left: auto; font-size: 12px; color: white; opacity: 0.8; text-decoration: none; }
+        .cards-resumo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+        .card-resumo { background: rgba(255,255,255,0.15); border-radius: 12px; padding: 12px; }
+        .card-label { font-size: 11px; opacity: 0.8; margin-bottom: 4px; }
+        .card-valor { font-size: 20px; font-weight: bold; }
+        .card-resumo.tres { grid-column: span 2; }
+        .formulario { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; }
+        .formulario p { font-size: 12px; opacity: 0.8; margin-bottom: 8px; color: white; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .form-grid input, .form-grid select { background: rgba(255,255,255,0.2); border: none; border-radius: 8px; padding: 10px; color: white; font-size: 13px; width: 100%; }
+        .form-grid input::placeholder { color: rgba(255,255,255,0.9); }
+        .form-grid select option { color: black; background: white; }
+        .form-full { width: 100%; background: rgba(255,255,255,0.2); border: none; border-radius: 8px; padding: 10px; color: white; font-size: 13px; margin-top: 8px; }
+        .form-full::placeholder { color: rgba(255,255,255,0.9); }
+        .btn-salvar { width: 100%; margin-top: 8px; background: white; color: #7c3aed; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        .btn-salvar:hover { background: #f0e6ff; }
+        .salario-form { display: flex; gap: 8px; margin-bottom: 16px; }
+        .salario-form input { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #ddd; font-size: 14px; background: white; }
+        .salario-form button { background: #7c3aed; color: white; border: none; border-radius: 10px; padding: 10px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+        .grid-tabelas { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .tabela-card { background: white; border-radius: 16px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .tabela-card h3 { font-size: 13px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; color: #333; }
+        .tabela-card table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .tabela-card td { padding: 6px 0; border-bottom: 1px solid #f0f0f0; color: #333; }
+        .tabela-card td:last-child { text-align: right; }
+        .tabela-full { grid-column: span 2; }
+        .btn-apagar { background: #9333ea; color: white; border: none; border-radius: 4px; padding: 3px 8px; cursor: pointer; font-size: 11px; }
+        .grafico-card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 12px; }
+        .grafico-card h3 { font-size: 14px; font-weight: bold; margin-bottom: 12px; color: #333; }
+        .historico-card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .historico-card h3 { font-size: 14px; font-weight: bold; margin-bottom: 12px; color: #333; }
+        .historico-card table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .historico-card td, .historico-card th { padding: 8px 4px; border-bottom: 1px solid #f0f0f0; text-align: left; }
+        .historico-card th { font-size: 11px; color: #888; }
+        .vazio { color: #bbb; font-size: 12px; font-style: italic; }
+        @media (max-width: 500px) {
+            .grid-tabelas { grid-template-columns: 1fr; }
+            .tabela-full { grid-column: span 1; }
+            .cards-resumo { grid-template-columns: 1fr; }
+            .card-resumo.tres { grid-column: span 1; }
+        }
+    </style>
 </head>
 <body>
 
@@ -71,24 +71,24 @@
     </div>
 
     {% if salario > 0 %}
-    <div class="card-resumo tres">
-    <p style="font-size:11px; opacity:0.8; margin-bottom:4px;">💰 Saldo disponível</p>
-    {% if saldo >= 0 %}
-    <p style="font-size:22px; font-weight:bold; color:#86efac;">R$ {{ "%.2f"|format(saldo) }}</p>
-    {% else %}
-    <p style="font-size:22px; font-weight:bold; color:#fca5a5;">R$ {{ "%.2f"|format(saldo) }}</p>
-    {% endif %}
-</div>
-        <div>
-            <p style="font-size:11px; opacity:0.8; margin-bottom:4px;">Saldo disponível</p>
+    <div class="cards-resumo">
+        <div class="card-resumo">
+            <p class="card-label">Salário</p>
+            <p class="card-valor" style="color:#86efac;">R$ {{ "%.2f"|format(salario) }}</p>
+        </div>
+        <div class="card-resumo">
+            <p class="card-label">Total gastos</p>
+            <p class="card-valor" style="color:#fca5a5;">R$ {{ "%.2f"|format(total_gastos) }}</p>
+        </div>
+        <div class="card-resumo tres">
+            <p class="card-label">💰 Saldo disponível</p>
             {% if saldo >= 0 %}
-            <p style="font-size:22px; font-weight:bold; color:#86efac;">R$ {{ "%.2f"|format(saldo) }}</p>
+            <p class="card-valor" style="color:#86efac;">R$ {{ "%.2f"|format(saldo) }}</p>
             {% else %}
-            <p style="font-size:22px; font-weight:bold; color:#fca5a5;">R$ {{ "%.2f"|format(saldo) }}</p>
+            <p class="card-valor" style="color:#fca5a5;">R$ {{ "%.2f"|format(saldo) }}</p>
             {% endif %}
         </div>
     </div>
-</div>
     {% endif %}
 
     <div class="formulario">
@@ -116,7 +116,6 @@
 
 {% if historico %}
 <div class="grid-tabelas">
-
     <div class="tabela-card">
         <h3>🧾 Contas fixas</h3>
         <table>
@@ -173,18 +172,21 @@
             {% endfor %}
         </table>
     </div>
-
 </div>
 {% endif %}
 
 {% if caixinhas %}
 <div class="tabela-card" style="margin-bottom: 12px;">
+{% else %}
+<div class="tabela-card" style="margin-bottom: 12px;">
+{% endif %}
     <h3>🏦 Minhas caixinhas</h3>
     <form action="/caixinha" method="POST" style="display:flex; gap:8px; margin-bottom:10px;">
         <input type="text" name="nome" placeholder="Nome" required style="flex:2; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
         <input type="number" name="valor" placeholder="R$" step="0.01" required style="flex:1; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
         <button type="submit" style="background:#7c3aed; color:white; border:none; border-radius:8px; padding:8px 12px; cursor:pointer; font-size:13px;">+</button>
     </form>
+    {% if caixinhas %}
     <table style="width:100%; border-collapse:collapse; font-size:13px;">
         <tr><th style="text-align:left; color:#888; font-size:11px; padding:4px 0;">Nome</th><th style="text-align:right; color:#888; font-size:11px; padding:4px 0;">Valor</th><th></th></tr>
         {% for c in caixinhas %}
@@ -204,18 +206,10 @@
             <td></td>
         </tr>
     </table>
-</div>
-{% else %}
-<div class="tabela-card" style="margin-bottom: 12px;">
-    <h3>🏦 Minhas caixinhas</h3>
-    <form action="/caixinha" method="POST" style="display:flex; gap:8px; margin-bottom:10px;">
-        <input type="text" name="nome" placeholder="Nome" required style="flex:2; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
-        <input type="number" name="valor" placeholder="R$" step="0.01" required style="flex:1; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
-        <button type="submit" style="background:#7c3aed; color:white; border:none; border-radius:8px; padding:8px 12px; cursor:pointer; font-size:13px;">+</button>
-    </form>
+    {% else %}
     <p class="vazio">Nenhuma caixinha ainda.</p>
+    {% endif %}
 </div>
-{% endif %}
 
 {% if historico %}
 <div class="historico-card">
