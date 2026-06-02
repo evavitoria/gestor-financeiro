@@ -311,5 +311,15 @@ def deletar_deposito(id):
     conn.close()
     return redirect(url_for('index'))
 
+@app.route('/setup-db-secreto-123')
+def setup_db():
+    try:
+        init_db()
+        return 'Tabelas criadas com sucesso!'
+    except Exception as e:
+        return f'Erro: {e}'
+    
+init_db()
+
 if __name__ == '__main__':
     app.run(debug=True)
