@@ -225,7 +225,6 @@
     </form>
 
     {% if meta > 0 %}
-    <!-- Barra de progresso -->
     <div style="margin-bottom:6px; display:flex; justify-content:space-between; font-size:12px; color:#555;">
         <span>R$ {{ "%.2f"|format(total_depositado_meta) }} guardado</span>
         <span>Meta: R$ {{ "%.2f"|format(meta) }}</span>
@@ -246,7 +245,6 @@
         {% endif %}
     </div>
 
-    <!-- Adicionar depósito -->
     <form action="/deposito_meta" method="POST" style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
         <input type="number" name="valor" placeholder="Valor R$" step="0.01" required
                style="flex:1; min-width:100px; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
@@ -255,7 +253,6 @@
         <button type="submit" style="background:#16a34a; color:white; border:none; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:13px;">+ Depósito</button>
     </form>
 
-    <!-- Histórico de depósitos -->
     {% if depositos_meta %}
     <table style="width:100%; border-collapse:collapse; font-size:12px;">
         <tr>
@@ -291,46 +288,6 @@
     <p class="vazio">Defina uma meta e prazo para acompanhar seu progresso!</p>
     {% endif %}
 </div>
-
-    <!-- Adicionar depósito -->
-    <form action="/deposito_meta" method="POST" style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
-        <input type="number" name="valor" placeholder="Valor R$" step="0.01" required
-               style="flex:1; min-width:100px; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
-        <input type="text" name="descricao" placeholder="Descrição (opcional)"
-               style="flex:2; min-width:120px; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
-        <button type="submit" style="background:#16a34a; color:white; border:none; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:13px;">+ Depósito</button>
-    </form>
-
-    <!-- Histórico de depósitos -->
-    {% if depositos_meta %}
-    <table style="width:100%; border-collapse:collapse; font-size:12px;">
-        <tr>
-            <th style="text-align:left; color:#888; font-size:11px; padding:4px 0;">Data</th>
-            <th style="text-align:left; color:#888; font-size:11px; padding:4px 0;">Descrição</th>
-            <th style="text-align:right; color:#888; font-size:11px; padding:4px 0;">Valor</th>
-            <th></th>
-        </tr>
-        {% for d in depositos_meta %}
-        <tr>
-            <td style="padding:6px 0; border-bottom:1px solid #f0f0f0; color:#555;">{{ d[4] }}</td>
-            <td style="padding:6px 0; border-bottom:1px solid #f0f0f0;">{{ d[3] or '—' }}</td>
-            <td style="padding:6px 0; border-bottom:1px solid #f0f0f0; text-align:right; color:#16a34a; font-weight:bold;">R$ {{ "%.2f"|format(d[2]) }}</td>
-            <td style="padding:6px 0; border-bottom:1px solid #f0f0f0; text-align:right;">
-                <form action="/deletar_deposito/{{ d[0] }}" method="POST" style="margin:0;">
-                    <button type="submit" class="btn-apagar">X</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-    <p class="vazio">Nenhum depósito ainda. Comece guardando!</p>
-    {% endif %}
-
-    {% if progresso >= 100 %}
-    <div style="background:#dcfce7; border-radius:10px; padding:10px; text-align:center; margin-top:10px; color:#16a34a; font-weight:bold; font-size:14px;">
-        🎉 Parabéns! Você atingiu sua meta!
-    </div>
 
     {% else %}
     <p class="vazio">Defina uma meta e prazo para acompanhar seu progresso!</p>
