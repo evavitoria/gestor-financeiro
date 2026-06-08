@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 try:
@@ -256,7 +256,10 @@ def deletar_caixinha(id):
 
 @app.route('/sitemap.xml')
 def sitemap():
-    return app.send_static_file('sitemap.xml')
+    try:
+        return send_from_directory('.', 'sitemap.xml', mimetype='application/xml')
+    except:
+        return redirect(url_for('index'))
 
 @app.route('/meta', methods=['POST'])
 @login_required
