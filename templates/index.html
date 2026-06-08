@@ -175,11 +175,7 @@
 </div>
 {% endif %}
 
-{% if caixinhas %}
 <div class="tabela-card" style="margin-bottom: 12px;">
-{% else %}
-<div class="tabela-card" style="margin-bottom: 12px;">
-{% endif %}
     <h3>🏦 Minhas caixinhas</h3>
     <form action="/caixinha" method="POST" style="display:flex; gap:8px; margin-bottom:10px;">
         <input type="text" name="nome" placeholder="Nome" required style="flex:2; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
@@ -188,7 +184,11 @@
     </form>
     {% if caixinhas %}
     <table style="width:100%; border-collapse:collapse; font-size:13px;">
-        <tr><th style="text-align:left; color:#888; font-size:11px; padding:4px 0;">Nome</th><th style="text-align:right; color:#888; font-size:11px; padding:4px 0;">Valor</th><th></th></tr>
+        <tr>
+            <th style="text-align:left; color:#888; font-size:11px; padding:4px 0;">Nome</th>
+            <th style="text-align:right; color:#888; font-size:11px; padding:4px 0;">Valor</th>
+            <th></th>
+        </tr>
         {% for c in caixinhas %}
         <tr>
             <td style="padding:6px 0; border-bottom:1px solid #f0f0f0;">{{ c[2] }}</td>
@@ -288,12 +288,6 @@
     <p class="vazio">Defina uma meta e prazo para acompanhar seu progresso!</p>
     {% endif %}
 </div>
-
-    {% else %}
-    <p class="vazio">Defina uma meta e prazo para acompanhar seu progresso!</p>
-    {% endif %}
-</div>
-
 
 {% if historico %}
 <div class="historico-card">
