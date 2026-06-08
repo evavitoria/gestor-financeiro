@@ -18,36 +18,19 @@
         }
         .container {
             width: 100%;
-            max-width: 500px;
-            animation: fadeIn 0.6s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .esquerda {
-            display: none;
-        }
-        .esquerda-icone {
-            display: none;
-        }
-        .esquerda h2 {
-            display: none;
-        }
-        .esquerda p {
-            display: none;
-        }
-        .direita {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 40px 32px;
-            border-radius: 20px;
+            max-width: 450px;
             animation: slideUp 0.6s ease-out;
         }
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        .box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px 32px;
+            border-radius: 20px;
         }
         input {
             width: 100%;
@@ -128,79 +111,28 @@
             color: rgba(255, 200, 200, 1);
             font-weight: 500;
         }
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-            .esquerda h2 {
-                font-size: 28px;
-            }
-            .direita {
-                max-width: 400px;
-                margin: 0 auto;
-                width: 100%;
-            }
-        }
     </style>
 </head>
 <body>
-  <div class="container">
-    <div class="esquerda">
-      <div class="esquerda-icone">💜</div>
-      <h2>Criar conta</h2>
-      <p>Comece a organizar suas finanças de forma simples e gratuita.</p>
+    <div class="container">
+        <div class="box">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for msg in messages %}
+                        <div class="erro">{{ msg }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <form action="/cadastro" method="POST">
+                <input type="text" name="nome" placeholder="Seu nome" required>
+                <input type="email" name="email" placeholder="Seu email" required>
+                <input type="password" name="senha" placeholder="Sua senha" required>
+                <button type="submit">Criar conta grátis</button>
+            </form>
+            <div class="links-container">
+                <span class="link-item">Já tem conta? <a href="{{ url_for('login') }}">Entrar</a></span>
+            </div>
+        </div>
     </div>
-
-    <div class="direita">
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          {% for msg in messages %}
-            <div class="erro">{{ msg }}</div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
-      <form action="/cadastro" method="POST">
-        <input type="text" name="nome" placeholder="Seu nome" required>
-        <input type="email" name="email" placeholder="Seu email" required>
-        <input type="password" name="senha" placeholder="Sua senha" required>
-        <button type="submit">Criar conta grátis</button>
-      </form>
-
-      <div class="links-container">
-        <span class="link-item">Já tem conta? <a href="{{ url_for('login') }}">Entrar</a></span>
-      </div>
-    </div>
-  </div>
-</body>
-</html>
-<body>
-  <div class="container">
-    <div class="esquerda">
-      <div class="esquerda-icone">💜</div>
-      <h2>Criar conta</h2>
-      <p>Comece a organizar suas finanças de forma simples e gratuita.</p>
-    </div>
-
-    <div class="direita">
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          {% for msg in messages %}
-            <div class="erro">{{ msg }}</div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
-      <form action="/cadastro" method="POST">
-        <input type="text" name="nome" placeholder="Seu nome" required>
-        <input type="email" name="email" placeholder="Seu email" required>
-        <input type="password" name="senha" placeholder="Sua senha" required>
-        <button type="submit">Criar conta grátis</button>
-      </form>
-
-      <div class="links-container">
-        <span class="link-item">Já tem conta? <a href="{{ url_for('login') }}">Entrar</a></span>
-      </div>
-    </div>
-  </div>
 </body>
 </html>
