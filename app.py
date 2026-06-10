@@ -16,6 +16,11 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
+limiter = Limiter(get_remote_address, app=app, default_limits=["200 per day"])
+
 DATABASE_URL = os.environ.get('DATABASE_URL', None)
 USE_SQLITE = DATABASE_URL is None
 
@@ -69,6 +74,11 @@ def load_user(user_id):
     if row:
         return User(row[0], row[1], row[2])
     return None
+
+@app.route('/login', methods=['GET', 'POST'])
+@limiter.limit("10 per minute")
+def login():
+    ...
 
 @app.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
@@ -323,6 +333,13 @@ def setup_db():
         return f'Erro: {e}'
     
 init_db()
+
+@app.after_request
+def security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True)
