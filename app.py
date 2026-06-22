@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 try:
     import psycopg2
 except ImportError:
@@ -10,14 +12,11 @@ except ImportError:
 import os
 
 app = Flask(__name__)
-app.secret_key = 'chave-secreta-gestor-2024'
+app.secret_key = os.environ.get('SECRET_KEY', 'dev-apenas-local')
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 
 limiter = Limiter(get_remote_address, app=app, default_limits=["200 per day"])
 
@@ -57,6 +56,8 @@ def init_db():
     cursor.close()
     conn.close()
 
+init_db()
+
 class User(UserMixin):
     def __init__(self, id, email, nome):
         self.id = id
@@ -75,65 +76,10 @@ def load_user(user_id):
         return User(row[0], row[1], row[2])
     return None
 
-@app.route('/login', methods=['GET', 'POST'])
-@limiter.limit("10 per minute")
-def login():
-    ...
-
-@app.route('/cadastro', methods=['GET', 'POST'])
-def cadastro():
-    if request.method == 'POST':
-        nome = request.form.get('nome')
-        email = request.form.get('email')
-        senha = generate_password_hash(request.form.get('senha'))
-        try:
-            conn, _ = get_conn()
-            cursor = conn.cursor()
-            cursor.execute(ph('INSERT INTO usuarios (email, senha, nome) VALUES (%s, %s, %s)'), (email, senha, nome))
-            conn.commit()
-            cursor.close()
-            conn.close()
-            flash('Conta criada! Faça login.')
-            return redirect(url_for('login'))
-        except:
-            flash('Email já cadastrado!')
-    return render_template('cadastro.html')
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form.get('email')
-        senha = request.form.get('senha')
-        conn, _ = get_conn()
-        cursor = conn.cursor()
-        cursor.execute(ph('SELECT id, email, nome, senha FROM usuarios WHERE email = %s'), (email,))
-        row = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        if row and check_password_hash(row[3], senha):
-            login_user(User(row[0], row[1], row[2]))
-            return redirect(url_for('index'))
-        flash('Email ou senha incorretos!')
-    return render_template('login.html')
-
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
-def get_salario():
-    conn, _ = get_conn()
-    cursor = conn.cursor()
-    cursor.execute(ph("SELECT valor FROM configuracoes WHERE chave = 'salario' AND user_id = %s"), (current_user.id,))
-    row = cursor.fetchone()
-    cursor.close()
-    conn.close()
-    return float(row[0]) if row else 0.0
-
 @app.route('/')
-@login_required
 def index():
+    if not current_user.is_authenticated:
+        return render_template('home.html')
     conn, _ = get_conn()
     cursor = conn.cursor()
     cursor.execute(ph('SELECT * FROM transacoes WHERE user_id = %s ORDER BY id DESC'), (current_user.id,))
@@ -161,7 +107,6 @@ def index():
     total_depositado_meta = sum(d[2] for d in depositos_meta)
     progresso = min(int((total_depositado_meta / meta * 100)), 100) if meta > 0 else 0
 
-    # Dias restantes
     dias_restantes = None
     if meta_prazo:
         from datetime import date
@@ -187,6 +132,58 @@ def index():
                            depositos_meta=depositos_meta,
                            total_depositado_meta=total_depositado_meta,
                            dias_restantes=dias_restantes)
+
+@app.route('/cadastro', methods=['GET', 'POST'])
+def cadastro():
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+        email = request.form.get('email')
+        senha = generate_password_hash(request.form.get('senha'))
+        try:
+            conn, _ = get_conn()
+            cursor = conn.cursor()
+            cursor.execute(ph('INSERT INTO usuarios (email, senha, nome) VALUES (%s, %s, %s)'), (email, senha, nome))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            flash('Conta criada! Faça login.')
+            return redirect(url_for('login'))
+        except:
+            flash('Email já cadastrado!')
+    return render_template('cadastro.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+@limiter.limit("10 per minute")
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        senha = request.form.get('senha')
+        conn, _ = get_conn()
+        cursor = conn.cursor()
+        cursor.execute(ph('SELECT id, email, nome, senha FROM usuarios WHERE email = %s'), (email,))
+        row = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if row and check_password_hash(row[3], senha):
+            login_user(User(row[0], row[1], row[2]))
+            return redirect(url_for('index'))
+        flash('Email ou senha incorretos!')
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+def get_salario():
+    conn, _ = get_conn()
+    cursor = conn.cursor()
+    cursor.execute(ph("SELECT valor FROM configuracoes WHERE chave = 'salario' AND user_id = %s"), (current_user.id,))
+    row = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return float(row[0]) if row else 0.0
 
 @app.route('/salario', methods=['POST'])
 @login_required
@@ -264,13 +261,6 @@ def deletar_caixinha(id):
     conn.close()
     return redirect(url_for('index'))
 
-@app.route('/sitemap.xml')
-def sitemap():
-    try:
-        return send_from_directory('.', 'sitemap.xml', mimetype='application/xml')
-    except:
-        return redirect(url_for('index'))
-
 @app.route('/meta', methods=['POST'])
 @login_required
 def salvar_meta():
@@ -324,6 +314,13 @@ def deletar_deposito(id):
     conn.close()
     return redirect(url_for('index'))
 
+@app.route('/sitemap.xml')
+def sitemap():
+    try:
+        return send_from_directory('.', 'sitemap.xml', mimetype='application/xml')
+    except:
+        return redirect(url_for('index'))
+
 @app.route('/setup-db-secreto-123')
 def setup_db():
     try:
@@ -331,8 +328,6 @@ def setup_db():
         return 'Tabelas criadas com sucesso!'
     except Exception as e:
         return f'Erro: {e}'
-    
-init_db()
 
 @app.after_request
 def security_headers(response):
