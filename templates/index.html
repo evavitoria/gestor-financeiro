@@ -5,47 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google-site-verification" content="wT9grFMkMuBurZQFoJRw8mwj_XZGvdGo0S4AHYE0Aj0" />
     <meta name="description" content="Gerencie suas finanças pessoais de forma simples e gratuita.">
-    <meta name="keywords" content="gestor financeiro, controle de gastos, finanças pessoais">
     <title>Organização Financeira</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: sans-serif; background: linear-gradient(160deg, #3b0764, #6b21a8, #7c3aed); min-height: 100vh; padding: 20px; }
-        .topo { background: linear-gradient(135deg, #7c3aed, #9333ea); border-radius: 20px; padding: 20px; color: white; margin-bottom: 16px; }
+        body { font-family: sans-serif; background: #f0f2f0; min-height: 100vh; padding: 20px; }
+        .topo { background: #0f2818; border-radius: 20px; padding: 20px; color: white; margin-bottom: 16px; }
         .topo-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: white; }
         .topo-nome { font-size: 16px; font-weight: bold; }
-        .topo-sub { font-size: 12px; opacity: 0.8; }
-        .sair { margin-left: auto; font-size: 12px; color: white; opacity: 0.8; text-decoration: none; }
+        .topo-sub { font-size: 12px; opacity: 0.7; }
+        .sair { margin-left: auto; font-size: 12px; color: rgba(255,255,255,0.7); text-decoration: none; }
+        .sair:hover { color: white; }
         .cards-resumo { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
-        .card-resumo { background: rgba(255,255,255,0.15); border-radius: 12px; padding: 12px; }
-        .card-label { font-size: 11px; opacity: 0.8; margin-bottom: 4px; }
+        .card-resumo { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; }
+        .card-label { font-size: 11px; opacity: 0.7; margin-bottom: 4px; }
         .card-valor { font-size: 20px; font-weight: bold; }
         .card-resumo.tres { grid-column: span 2; }
-        .formulario { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 12px; }
-        .formulario p { font-size: 12px; opacity: 0.8; margin-bottom: 8px; color: white; }
+        .formulario { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 12px; }
+        .formulario p { font-size: 12px; opacity: 0.7; margin-bottom: 8px; color: white; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .form-grid input, .form-grid select { background: rgba(255,255,255,0.2); border: none; border-radius: 8px; padding: 10px; color: white; font-size: 13px; width: 100%; }
-        .form-grid input::placeholder { color: rgba(255,255,255,0.9); }
+        .form-grid input, .form-grid select { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; color: white; font-size: 13px; width: 100%; }
+        .form-grid input::placeholder { color: rgba(255,255,255,0.6); }
         .form-grid select option { color: black; background: white; }
-        .form-full { width: 100%; background: rgba(255,255,255,0.2); border: none; border-radius: 8px; padding: 10px; color: white; font-size: 13px; margin-top: 8px; }
-        .form-full::placeholder { color: rgba(255,255,255,0.9); }
-        .btn-salvar { width: 100%; margin-top: 8px; background: white; color: #7c3aed; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: bold; cursor: pointer; }
-        .btn-salvar:hover { background: #f0e6ff; }
+        .form-full { width: 100%; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 10px; color: white; font-size: 13px; margin-top: 8px; }
+        .form-full::placeholder { color: rgba(255,255,255,0.6); }
+        .btn-salvar { width: 100%; margin-top: 8px; background: white; color: #0f2818; border: none; border-radius: 8px; padding: 12px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        .btn-salvar:hover { background: #e8ede9; }
         .salario-form { display: flex; gap: 8px; margin-bottom: 16px; }
         .salario-form input { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #ddd; font-size: 14px; background: white; }
-        .salario-form button { background: #7c3aed; color: white; border: none; border-radius: 10px; padding: 10px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+        .salario-form button { background: #0f2818; color: white; border: none; border-radius: 10px; padding: 10px 16px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+        .salario-form button:hover { background: #1d6b42; }
         .grid-tabelas { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-        .tabela-card { background: white; border-radius: 16px; padding: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .tabela-card h3 { font-size: 13px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; color: #333; }
+        .tabela-card { background: white; border-radius: 16px; padding: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .tabela-card h3 { font-size: 13px; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; color: #222; }
         .tabela-card table { width: 100%; border-collapse: collapse; font-size: 12px; }
         .tabela-card td { padding: 6px 0; border-bottom: 1px solid #f0f0f0; color: #333; }
         .tabela-card td:last-child { text-align: right; }
         .tabela-full { grid-column: span 2; }
-        .btn-apagar { background: #9333ea; color: white; border: none; border-radius: 4px; padding: 3px 8px; cursor: pointer; font-size: 11px; }
-        .grafico-card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 12px; }
-        .grafico-card h3 { font-size: 14px; font-weight: bold; margin-bottom: 12px; color: #333; }
-        .historico-card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .historico-card h3 { font-size: 14px; font-weight: bold; margin-bottom: 12px; color: #333; }
+        .btn-apagar { background: #0f2818; color: white; border: none; border-radius: 4px; padding: 3px 8px; cursor: pointer; font-size: 11px; }
+        .btn-apagar:hover { background: #1d6b42; }
+        .grafico-card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 12px; }
+        .grafico-card h3 { font-size: 14px; font-weight: bold; margin-bottom: 12px; color: #222; }
+        .historico-card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 20px; }
+        .historico-card h3 { font-size: 14px; font-weight: bold; margin-bottom: 12px; color: #222; }
         .historico-card table { width: 100%; border-collapse: collapse; font-size: 12px; }
         .historico-card td, .historico-card th { padding: 8px 4px; border-bottom: 1px solid #f0f0f0; text-align: left; }
         .historico-card th { font-size: 11px; color: #888; }
@@ -62,7 +64,7 @@
 
 <div class="topo">
     <div class="topo-header">
-        <div class="avatar">💜</div>
+        <div class="avatar">{{ current_user.nome[0].upper() }}</div>
         <div>
             <p class="topo-nome">Organização Financeira</p>
             <p class="topo-sub">Olá, {{ current_user.nome }}!</p>
@@ -81,7 +83,7 @@
             <p class="card-valor" style="color:#fca5a5;">R$ {{ "%.2f"|format(total_gastos) }}</p>
         </div>
         <div class="card-resumo tres">
-            <p class="card-label">💰 Saldo disponível</p>
+            <p class="card-label">Saldo disponível</p>
             {% if saldo >= 0 %}
             <p class="card-valor" style="color:#86efac;">R$ {{ "%.2f"|format(saldo) }}</p>
             {% else %}
@@ -122,7 +124,7 @@
             {% for item in historico if item[3] == 'Conta Fixa' %}
             <tr>
                 <td>{{ item[4] }}</td>
-                <td style="color:#9333ea;">R$ {{ "%.2f"|format(item[2]) }}</td>
+                <td style="color:#1d6b42;">R$ {{ "%.2f"|format(item[2]) }}</td>
                 <td>
                     <form action="/deletar/{{ item[0] }}" method="POST" style="margin:0;">
                         <button type="submit" class="btn-apagar">X</button>
@@ -141,7 +143,7 @@
             {% for item in historico if item[3] == 'Investimento' %}
             <tr>
                 <td>{{ item[4] }}</td>
-                <td style="color:#16a34a;">R$ {{ "%.2f"|format(item[2]) }}</td>
+                <td style="color:#1d6b42;">R$ {{ "%.2f"|format(item[2]) }}</td>
                 <td>
                     <form action="/deletar/{{ item[0] }}" method="POST" style="margin:0;">
                         <button type="submit" class="btn-apagar">X</button>
@@ -180,7 +182,7 @@
     <form action="/caixinha" method="POST" style="display:flex; gap:8px; margin-bottom:10px;">
         <input type="text" name="nome" placeholder="Nome" required style="flex:2; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
         <input type="number" name="valor" placeholder="R$" step="0.01" required style="flex:1; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
-        <button type="submit" style="background:#7c3aed; color:white; border:none; border-radius:8px; padding:8px 12px; cursor:pointer; font-size:13px;">+</button>
+        <button type="submit" style="background:#0f2818; color:white; border:none; border-radius:8px; padding:8px 12px; cursor:pointer; font-size:13px;">+</button>
     </form>
     {% if caixinhas %}
     <table style="width:100%; border-collapse:collapse; font-size:13px;">
@@ -192,7 +194,7 @@
         {% for c in caixinhas %}
         <tr>
             <td style="padding:6px 0; border-bottom:1px solid #f0f0f0;">{{ c[2] }}</td>
-            <td style="padding:6px 0; border-bottom:1px solid #f0f0f0; text-align:right; color:#7c3aed; font-weight:bold;">R$ {{ "%.2f"|format(c[3]) }}</td>
+            <td style="padding:6px 0; border-bottom:1px solid #f0f0f0; text-align:right; color:#1d6b42; font-weight:bold;">R$ {{ "%.2f"|format(c[3]) }}</td>
             <td style="padding:6px 0; border-bottom:1px solid #f0f0f0; text-align:right;">
                 <form action="/deletar_caixinha/{{ c[0] }}" method="POST" style="margin:0;">
                     <button type="submit" class="btn-apagar">X</button>
@@ -202,7 +204,7 @@
         {% endfor %}
         <tr>
             <td style="padding:6px 0; font-weight:bold;">Total</td>
-            <td style="padding:6px 0; text-align:right; color:#7c3aed; font-weight:bold;">R$ {{ "%.2f"|format(total_caixinhas) }}</td>
+            <td style="padding:6px 0; text-align:right; color:#1d6b42; font-weight:bold;">R$ {{ "%.2f"|format(total_caixinhas) }}</td>
             <td></td>
         </tr>
     </table>
@@ -221,7 +223,7 @@
         <input type="date" name="prazo"
                value="{{ meta_prazo if meta_prazo else '' }}"
                style="flex:2; min-width:130px; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
-        <button type="submit" style="background:#7c3aed; color:white; border:none; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:13px;">Salvar</button>
+        <button type="submit" style="background:#0f2818; color:white; border:none; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:13px;">Salvar</button>
     </form>
 
     {% if meta > 0 %}
@@ -230,10 +232,10 @@
         <span>Meta: R$ {{ "%.2f"|format(meta) }}</span>
     </div>
     <div style="background:#f0f0f0; border-radius:99px; height:14px; overflow:hidden; margin-bottom:6px;">
-        <div style="background: linear-gradient(90deg, #7c3aed, #a855f7); height:100%; width:{{ progresso }}%; border-radius:99px; transition: width 0.5s;"></div>
+        <div style="background: linear-gradient(90deg, #0f2818, #1d6b42); height:100%; width:{{ progresso }}%; border-radius:99px; transition: width 0.5s;"></div>
     </div>
     <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:12px;">
-        <span style="color:#7c3aed; font-weight:bold;">{{ progresso }}% concluído</span>
+        <span style="color:#1d6b42; font-weight:bold;">{{ progresso }}% concluído</span>
         {% if dias_restantes is not none %}
             {% if dias_restantes > 0 %}
             <span style="color:#555;">⏳ {{ dias_restantes }} dias restantes</span>
@@ -250,7 +252,7 @@
                style="flex:1; min-width:100px; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
         <input type="text" name="descricao" placeholder="Descrição (opcional)"
                style="flex:2; min-width:120px; padding:8px; border-radius:8px; border:1px solid #ddd; font-size:13px;">
-        <button type="submit" style="background:#16a34a; color:white; border:none; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:13px;">+ Depósito</button>
+        <button type="submit" style="background:#1d6b42; color:white; border:none; border-radius:8px; padding:8px 14px; cursor:pointer; font-size:13px;">+ Depósito</button>
     </form>
 
     {% if depositos_meta %}
@@ -265,7 +267,7 @@
         <tr>
             <td style="padding:6px 0; border-bottom:1px solid #f0f0f0; color:#555;">{{ d[4] }}</td>
             <td style="padding:6px 0; border-bottom:1px solid #f0f0f0;">{{ d[3] or '—' }}</td>
-            <td style="padding:6px 0; border-bottom:1px solid #f0f0f0; text-align:right; color:#16a34a; font-weight:bold;">R$ {{ "%.2f"|format(d[2]) }}</td>
+            <td style="padding:6px 0; border-bottom:1px solid #f0f0f0; text-align:right; color:#1d6b42; font-weight:bold;">R$ {{ "%.2f"|format(d[2]) }}</td>
             <td style="padding:6px 0; border-bottom:1px solid #f0f0f0; text-align:right;">
                 <form action="/deletar_deposito/{{ d[0] }}" method="POST" style="margin:0;">
                     <button type="submit" class="btn-apagar">X</button>
@@ -279,8 +281,8 @@
     {% endif %}
 
     {% if progresso >= 100 %}
-    <div style="background:#dcfce7; border-radius:10px; padding:10px; text-align:center; margin-top:10px; color:#16a34a; font-weight:bold; font-size:14px;">
-        🎉 Parabéns! Você atingiu sua meta!
+    <div style="background:#dcfce7; border-radius:10px; padding:10px; text-align:center; margin-top:10px; color:#1d6b42; font-weight:bold; font-size:14px;">
+        Parabéns! Você atingiu sua meta!
     </div>
     {% endif %}
 
@@ -324,7 +326,7 @@
             datasets: [{
                 label: 'Total R$',
                 data: [{{ total_fixa }}, {{ total_variavel }}, {{ total_investimento }}],
-                backgroundColor: ['#9333ea', '#d97706', '#16a34a'],
+                backgroundColor: ['#0f2818', '#d97706', '#1d6b42'],
                 borderRadius: 8
             }]
         },
