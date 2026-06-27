@@ -336,5 +336,23 @@ def security_headers(response):
     response.headers['X-XSS-Protection'] = '1; mode=block'
     return response
 
+@app.route('/admin-secreto-Eva')
+def admin():
+    conn, _ = get_conn()
+    cursor = conn.cursor()
+    cursor.execute('SELECT COUNT(*) FROM usuarios')
+    total_usuarios = cursor.fetchone()[0]
+    cursor.execute('SELECT COUNT(*) FROM transacoes')
+    total_transacoes = cursor.fetchone()[0]
+    cursor.execute('SELECT nome, email FROM usuarios ORDER BY id DESC')
+    usuarios = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return render_template('admin.html', 
+                           total_usuarios=total_usuarios,
+                           total_transacoes=total_transacoes,
+                           usuarios=usuarios)
+
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: sans-serif; background: #0f2818; min-height: 100vh; padding: 30px 20px; }
+        h1 { color: white; font-size: 22px; margin-bottom: 24px; }
+        .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+        .card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 20px; text-align: center; }
+        .card p { color: rgba(255,255,255,0.6); font-size: 13px; margin-bottom: 8px; }
+        .card h2 { color: white; font-size: 36px; font-weight: bold; }
+        .tabela { background: white; border-radius: 14px; padding: 20px; }
+        .tabela h3 { font-size: 14px; font-weight: bold; color: #222; margin-bottom: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        td, th { padding: 8px 6px; border-bottom: 1px solid #f0f0f0; text-align: left; }
+        th { color: #888; font-size: 11px; }
+        .vazio { color: #bbb; font-size: 13px; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>Painel Admin</h1>
+    <div class="cards">
+        <div class="card">
+            <p>Total de usuários</p>
+            <h2>{{ total_usuarios }}</h2>
+        </div>
+        <div class="card">
+            <p>Total de lançamentos</p>
+            <h2>{{ total_transacoes }}</h2>
+        </div>
+    </div>
+    <div class="tabela">
+        <h3>Usuários cadastrados</h3>
+        {% if usuarios %}
+        <table>
+            <tr><th>Nome</th><th>Email</th></tr>
+            {% for u in usuarios %}
+            <tr>
+                <td>{{ u[0] }}</td>
+                <td>{{ u[1] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p class="vazio">Nenhum usuário ainda.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
