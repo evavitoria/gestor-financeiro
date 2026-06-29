@@ -18,7 +18,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-limiter = Limiter(get_remote_address, app=app, default_limits=["200 per day"])
+limiter = Limiter(get_remote_address, app=app, default_limits=["2000 per day", "200 per hour"])
 
 DATABASE_URL = os.environ.get('DATABASE_URL', None)
 USE_SQLITE = DATABASE_URL is None
@@ -352,7 +352,6 @@ def admin():
                            total_usuarios=total_usuarios,
                            total_transacoes=total_transacoes,
                            usuarios=usuarios)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
